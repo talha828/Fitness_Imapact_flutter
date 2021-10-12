@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "597722764030",
+    "project_id": "fitness-impact",
+    "storage_bucket": "fitness-impact.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597722764030:android:4820c4615699345e3d8baf",
+        "android_client_info": {
+          "package_name": "com.trgs.fitnessimapct.fitness_impact"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597722764030-jmc8vsokt43utaom2otdkmroc21nlcsp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGR8DjTm5LPbwwFI7oS73EEDLmAn6GXh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597722764030-jmc8vsokt43utaom2otdkmroc21nlcsp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
