@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fitness_impact/main_screen_page.dart';
+import 'package:fitness_impact/main_page/main_screen_page.dart';
 import 'package:fitness_impact/user_account/login/forgot_password.dart';
 import 'package:fitness_impact/user_account/login/login_button.dart';
 import 'package:fitness_impact/user_account/signup/button.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -36,8 +37,35 @@ class _LoginPageState extends State<LoginPage> {
        }
 
   }
-  @override
-  Widget build(BuildContext context) {
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential).whenComplete(() => Navigator.push(context, MaterialPageRoute(builder: (context)=>MainPage()))).catchError((e)=>Alert(context: context,
+        title: "Something wants wrong",
+        desc: "please retry something wanys wrong").show());
+  }
+  Future<UserCredential>  facebookLogin()async {
+    final LoginResult result = await FacebookAuth.instance.login(); // by default we request the email and the public profile
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    final AuthCredential facebookCredential =
+    FacebookAuthProvider.credential(result.accessToken!.token);
+    return await _auth.signInWithCredential(facebookCredential).whenComplete(() => Navigator.push(context, MaterialPageRoute(builder: (context)=>MainPage()))).catchError((e)=>Alert(context: context,
+        title: "Something wants wrong",
+        desc: "please retry something wanys wrong").show());
+  }
+    @override
+  Widget build(BuildContext context){
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -147,10 +175,10 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      //TODO: google login
                       FloatingActionButton(
                         heroTag:'1',
-                        onPressed: ()async {
-                        },
+                        onPressed: signInWithGoogle,
                         backgroundColor: Colors.white,
                         child:const Icon(
                           FontAwesomeIcons.google,
@@ -158,9 +186,10 @@ class _LoginPageState extends State<LoginPage> {
                           size: 30,
                         ),
                       ),
+                      //TODO: facebook login
                       FloatingActionButton(
                         heroTag: '2',
-                        onPressed: () {},
+                        onPressed: facebookLogin,
                         backgroundColor: Colors.white,
                         child: const Icon(
                           FontAwesomeIcons.facebook,
@@ -168,6 +197,8 @@ class _LoginPageState extends State<LoginPage> {
                           size: 30,
                         ),
                       ),
+                      //TODO:Twitter lo
+                      // gin
                       FloatingActionButton(
                         heroTag: '3',
                         onPressed: () {},

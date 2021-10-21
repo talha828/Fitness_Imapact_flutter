@@ -4,6 +4,10 @@ import 'package:fitness_impact/user_account/login/forgot_password.dart';
 import 'package:fitness_impact/user_account/login/login_page.dart';
 import 'package:fitness_impact/user_account/signup/sign_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'challenge_screen/challenge_creation.dart';
+import 'main_page/main_screen_page.dart';
 
 Future <void> main()async {
   await  WidgetsFlutterBinding.ensureInitialized();
@@ -17,11 +21,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  MaterialApp(
       debugShowCheckedModeBanner: false,
       home:SafeArea(
         child: Scaffold(
-          body:LoginPage() ,
+          body:SignPage(),
         ),
       ) ,
     );

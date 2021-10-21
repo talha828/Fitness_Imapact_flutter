@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_impact/user_account/signup/button.dart';
-import 'package:fitness_impact/main_screen_page.dart';
+import 'package:fitness_impact/main_page/main_screen_page.dart';
 import 'package:fitness_impact/user_account/signup/textfieldforsignup.dart';
 import 'package:fitness_impact/user_account/signup/verification_phone_number.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 
 
+
 class SignPage extends StatefulWidget {
   const SignPage({Key? key}) : super(key: key);
 
@@ -34,6 +36,8 @@ class _SignPageState extends State<SignPage> {
   dynamic val = 1;// for radio button out put selection
   bool photos=false;// profile image checker
   var photo;// save photo as xFile format
+  var image;
+   var file;
 String Images='assets/simple_icon/images.png';
   // this function is for getting profile image
   getImage() async {
@@ -47,26 +51,22 @@ String Images='assets/simple_icon/images.png';
       }
       if (status.isGranted) {
         final ImagePicker _picker = ImagePicker();
-         photo = await _picker.pickImage(
-            source: ImageSource.camera).then((image) {
-          if (image != null && image.path != null) {
-            setState(() {
-              photos=true;
-            });
-            GallerySaver.saveImage(image.path).then((path) async{} ).catchError((e)=>print(e));
-          }
-        } );
+        final XFile? photo = await _picker.pickImage(
+            source: ImageSource.camera);
+        setState(() {
+          photos=true;
+           file= File(photo!.path);
+
+        });
       }
     }
     if(val==2){
       final ImagePicker _picker = ImagePicker();
- photo = await _picker.pickImage(source: ImageSource.gallery).then((image) {
-   if (image != null && image.path != null) {
-     setState(() {
-       photos=true;
-     });
-   }
- } );
+       photo = await _picker.pickImage(source: ImageSource.gallery).catchError((e){print(e);print('wrong');});
+      setState(() {
+        photos=true;
+        file= File(photo!.path);
+      });
     }
   }
    String name='';
@@ -76,6 +76,33 @@ String Images='assets/simple_icon/images.png';
    String phoneCode='';
    String phoneNumber='';
   //this funtion is use to sign up account
+  saveData()async{
+  if(file!=null){
+    firebase_storage.FirebaseStorage storage = firebase_storage.FirebaseStorage.instance;
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('Profile_Image').child(email);
+    var data = await ref.putFile(photo);
+    var link = ref.getDownloadURL().catchError((e)=>  Alert(context: context,
+        title: "Something wants wrongs",
+        desc: "please check somethings wants gets wrongs").show());
+    FirebaseAuth _auth=FirebaseAuth.instance;
+    CollectionReference users = FirebaseFirestore.instance.collection('users_Data');
+    print(link);
+    var putData =users.doc(email).set({
+      'User_name':name,
+      'user_uid':_auth.currentUser!.uid,
+      'user_email':email,
+      'user_phone_number':phoneNumber,
+      'user_password':password,
+      'user_image':link,
+    }).catchError((e)=>  Alert(context: context,
+        title: "Something wants wrongs",
+        desc: "please check somethings wants gets wrongs").show()).then((value) => Navigator.push(context, MaterialPageRoute(builder: (context)=>MainPage())));
+
+  }
+  else{
+    print('sorry world');
+  }
+  }
   signAccount(){
     if(name==''||email==''||password==''||confirmPassword==''||phoneCode==''||phoneNumber==''){
       Alert(context: context,
@@ -90,7 +117,8 @@ String Images='assets/simple_icon/images.png';
       desc: "password can`t be less the 8 character").show();
       }).whenComplete(() => _auth.verifyPhoneNumber(
           phoneNumber: '${phoneCode +phoneNumber}',
-          verificationCompleted:  (PhoneAuthCredential credential){
+          verificationCompleted:  (PhoneAuthCredential credential)async{
+              await saveData();
             _auth.signInWithCredential(credential).then((value){Navigator.push(context, MaterialPageRoute(builder: (context)=>MainPage()));});
           },
           verificationFailed:(authException){
@@ -102,7 +130,7 @@ String Images='assets/simple_icon/images.png';
             showDialog(
                 context: context,
                 barrierDismissible: false,
-                builder: (context) => Verification(verificationCode: verificationId,),// Verification(verificationId:verificationId, country: country, name: widget.name, number: number,)
+                builder: (context) => Verification(verificationCode: verificationId,name: name,password: password,email: email,phoneNumber: phoneNumber,photo: file,),// Verification(verificationId:verificationId, country: country, name: widget.name, number: number,)
             );
           },
           codeAutoRetrievalTimeout:(String verificationId){
