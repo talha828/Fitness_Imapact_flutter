@@ -9,7 +9,7 @@ class ExercieseCatalog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
       child: Container(
         width: 150,
         padding: EdgeInsets.all(10),

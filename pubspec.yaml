@@ -31,6 +31,7 @@ dependencies:
   cloud_firestore: ^2.5.3
   provider: ^6.0.1
   xfile: ^1.1.0
+  camera: ^0.9.4+3
 
 
 

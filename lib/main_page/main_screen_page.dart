@@ -3,8 +3,11 @@ import 'package:fitness_impact/user_account/signup/button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../profile_page.dart';
 import 'category_options.dart';
 import 'exeriese_catalog.dart';
+import 'package:camera/camera.dart';
+
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -89,7 +92,7 @@ class _MainPageState extends State<MainPage> {
                      children:items ,
                    ),
                  ),
-               )
+               ),
               ],
             ),
             Container(
@@ -100,7 +103,7 @@ class _MainPageState extends State<MainPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  FloatingActionButton(onPressed: (){},heroTag:'1',child: Icon(FontAwesomeIcons.home,color: Colors.grey,),backgroundColor: Colors.white,elevation: 0,),
+                  FloatingActionButton(onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage())),heroTag:'1',child: Icon(FontAwesomeIcons.home,color: Colors.grey,),backgroundColor: Colors.white,elevation: 0,),
                   FloatingActionButton(onPressed: (){},heroTag:'2',child: Icon(FontAwesomeIcons.dumbbell,color:  Color(0xff2cb670),),backgroundColor: Colors.white,elevation: 0,),
                   FloatingActionButton(onPressed: (){},heroTag:'3',child: Icon(FontAwesomeIcons.camera,color: Colors.white,),backgroundColor: Color(0xff2cb670),),
                   FloatingActionButton(onPressed: (){},heroTag:'4',child: Icon(FontAwesomeIcons.trophy,color: Colors.grey,),backgroundColor: Colors.white,elevation: 0,),
